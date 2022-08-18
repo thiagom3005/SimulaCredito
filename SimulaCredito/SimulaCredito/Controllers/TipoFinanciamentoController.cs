@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SimulaCredito.Models;
 using SimulaCredito.Business;
+using SimulaCredito.Hypermedia.Filters;
 
 namespace SimulaCredito.Controllers
 {
@@ -19,12 +20,22 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType((200), Type = typeof(List<TipoFinanciamento>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_tipoFinanciamentoBusiness.FindAll());
         }
 
-        [HttpGet("´{id}")]
+        [HttpGet("{id}")]
+        [ProducesResponseType((200),Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id )
         {
             var tipoFinanciamento = _tipoFinanciamentoBusiness.FindById(id);
@@ -33,6 +44,10 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType((200), Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] TipoFinanciamento tipoFinanciamento)
         {
             if (tipoFinanciamento == null) return BadRequest();
@@ -40,6 +55,10 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType((200), Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] TipoFinanciamento tipoFinanciamento)
         {
             if (tipoFinanciamento == null) return BadRequest();
@@ -47,6 +66,9 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public IActionResult Delete(long id)
         {
             _tipoFinanciamentoBusiness.DeleteById(id);

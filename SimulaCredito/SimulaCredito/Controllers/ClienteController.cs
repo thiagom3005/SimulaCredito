@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SimulaCredito.Models;
 using SimulaCredito.Business;
+using SimulaCredito.Hypermedia.Filters;
 
 namespace SimulaCredito.Controllers
 {
@@ -19,12 +20,22 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet]
+        [ProducesResponseType((200), Type = typeof(List<Cliente>))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get()
         {
             return Ok(_clienteBusiness.FindAll());
         }
 
-        [HttpGet("´{id}")]
+        [HttpGet("{id}")]
+        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Get(long id )
         {
             var cliente = _clienteBusiness.FindById(id);
@@ -33,6 +44,10 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Post([FromBody] Cliente cliente)
         {
             if (cliente == null) return BadRequest();
@@ -40,13 +55,20 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPut]
+        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
         public IActionResult Put([FromBody] Cliente cliente)
         {
             if (cliente == null) return BadRequest();
             return Ok(_clienteBusiness.Update(cliente));
         }
 
-        [HttpDelete("{cpf}")]
+        [HttpDelete("{id}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
         public IActionResult Delete(long id)
         {
             _clienteBusiness.DeleteById(id);

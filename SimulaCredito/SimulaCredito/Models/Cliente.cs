@@ -1,10 +1,12 @@
-﻿using SimulaCredito.Models.Base;
+﻿using SimulaCredito.Hypermedia;
+using SimulaCredito.Hypermedia.Abstract;
+using SimulaCredito.Models.Base;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SimulaCredito.Models
 {
     [Table("Cliente")]
-    public class Cliente : BaseEntity
+    public class Cliente : BaseEntity, ISupportHyperMedia
     {
 
         [Column("CPF")]
@@ -17,5 +19,8 @@ namespace SimulaCredito.Models
         public double Celular { get; set; }
 
         public ICollection<Financiamento>? Financiamentos { get; set; }
+
+        [NotMapped] 
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }
