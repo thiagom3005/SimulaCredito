@@ -1,6 +1,5 @@
 ﻿using SimulaCredito.Models.Base;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace SimulaCredito.Models
 {
@@ -9,7 +8,6 @@ namespace SimulaCredito.Models
     {
 
         [Column("CPF")]
-        [JsonPropertyName("CPF")]
         public string CPF { get; set; }
         [Column("Nome")]
         public string Nome { get; set; }
