@@ -19,6 +19,6 @@ namespace SimulaCredito.Models
         [Column("QtdMaxParcelas")]
         public int QtdMaxParcelas { get; set; }
 
-        public ICollection<Financiamento> Financiamentos { get; set; }
+        public ICollection<Financiamento>? Financiamentos { get; set; }
     }
 }

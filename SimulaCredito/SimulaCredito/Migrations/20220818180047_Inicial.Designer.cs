@@ -12,7 +12,7 @@ using SimulaCredito.Models.Context;
 namespace SimulaCredito.Migrations
 {
     [DbContext(typeof(SqlContext))]
-    [Migration("20220818124043_Inicial")]
+    [Migration("20220818180047_Inicial")]
     partial class Inicial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,28 +114,20 @@ namespace SimulaCredito.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("DataVencimento");
 
-                    b.Property<long?>("FinanciamentoId")
+                    b.Property<long>("FinanciamentoId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("NumeroParcela")
                         .HasColumnType("int")
                         .HasColumnName("NumeroParcela");
 
-                    b.Property<long>("ParcelamentoId")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("Valor")
                         .HasColumnType("float")
                         .HasColumnName("Valor");
 
-                    b.Property<long>("parcelaId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
 
                     b.HasIndex("FinanciamentoId");
-
-                    b.HasIndex("parcelaId");
 
                     b.ToTable("Parcela");
                 });
@@ -200,17 +192,13 @@ namespace SimulaCredito.Migrations
 
             modelBuilder.Entity("SimulaCredito.Models.Parcela", b =>
                 {
-                    b.HasOne("SimulaCredito.Models.Financiamento", null)
+                    b.HasOne("SimulaCredito.Models.Financiamento", "financiamento")
                         .WithMany("parcelas")
-                        .HasForeignKey("FinanciamentoId");
-
-                    b.HasOne("SimulaCredito.Models.Parcela", "parcela")
-                        .WithMany()
-                        .HasForeignKey("parcelaId")
+                        .HasForeignKey("FinanciamentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("parcela");
+                    b.Navigation("financiamento");
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.Cliente", b =>

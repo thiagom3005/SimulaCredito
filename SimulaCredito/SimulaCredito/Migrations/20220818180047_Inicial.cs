@@ -83,9 +83,7 @@ namespace SimulaCredito.Migrations
                     Valor = table.Column<double>(type: "float", nullable: false),
                     DataVencimento = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DataPagamento = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ParcelamentoId = table.Column<long>(type: "bigint", nullable: false),
-                    parcelaId = table.Column<long>(type: "bigint", nullable: false),
-                    FinanciamentoId = table.Column<long>(type: "bigint", nullable: true)
+                    FinanciamentoId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -94,11 +92,6 @@ namespace SimulaCredito.Migrations
                         name: "FK_Parcela_Financiamento_FinanciamentoId",
                         column: x => x.FinanciamentoId,
                         principalTable: "Financiamento",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Parcela_Parcela_parcelaId",
-                        column: x => x.parcelaId,
-                        principalTable: "Parcela",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                 });
@@ -117,11 +110,6 @@ namespace SimulaCredito.Migrations
                 name: "IX_Parcela_FinanciamentoId",
                 table: "Parcela",
                 column: "FinanciamentoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Parcela_parcelaId",
-                table: "Parcela",
-                column: "parcelaId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

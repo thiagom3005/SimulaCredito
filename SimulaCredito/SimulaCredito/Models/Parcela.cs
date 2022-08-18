@@ -15,8 +15,8 @@ namespace SimulaCredito.Models
         [Column("DataPagamento")]
         public DateTime DataPagamento { get; set; }
 
-        public long ParcelamentoId { get; set; }
-        public Parcela parcela { get; set; }
+        public long FinanciamentoId { get; set; }
+        public Financiamento financiamento { get; set; }
 
     }
 }

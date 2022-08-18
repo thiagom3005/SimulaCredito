@@ -52,7 +52,7 @@ namespace SimulaCredito.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cliente");
+                    b.ToTable("Cliente", (string)null);
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.Financiamento", b =>
@@ -92,7 +92,7 @@ namespace SimulaCredito.Migrations
 
                     b.HasIndex("TipoFinanciamentoId");
 
-                    b.ToTable("Financiamento");
+                    b.ToTable("Financiamento", (string)null);
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.Parcela", b =>
@@ -112,30 +112,22 @@ namespace SimulaCredito.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("DataVencimento");
 
-                    b.Property<long?>("FinanciamentoId")
+                    b.Property<long>("FinanciamentoId")
                         .HasColumnType("bigint");
 
                     b.Property<int>("NumeroParcela")
                         .HasColumnType("int")
                         .HasColumnName("NumeroParcela");
 
-                    b.Property<long>("ParcelamentoId")
-                        .HasColumnType("bigint");
-
                     b.Property<double>("Valor")
                         .HasColumnType("float")
                         .HasColumnName("Valor");
-
-                    b.Property<long>("parcelaId")
-                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
                     b.HasIndex("FinanciamentoId");
 
-                    b.HasIndex("parcelaId");
-
-                    b.ToTable("Parcela");
+                    b.ToTable("Parcela", (string)null);
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.TipoFinanciamento", b =>
@@ -174,7 +166,7 @@ namespace SimulaCredito.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoFinanciamento");
+                    b.ToTable("TipoFinanciamento", (string)null);
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.Financiamento", b =>
@@ -198,17 +190,13 @@ namespace SimulaCredito.Migrations
 
             modelBuilder.Entity("SimulaCredito.Models.Parcela", b =>
                 {
-                    b.HasOne("SimulaCredito.Models.Financiamento", null)
+                    b.HasOne("SimulaCredito.Models.Financiamento", "financiamento")
                         .WithMany("parcelas")
-                        .HasForeignKey("FinanciamentoId");
-
-                    b.HasOne("SimulaCredito.Models.Parcela", "parcela")
-                        .WithMany()
-                        .HasForeignKey("parcelaId")
+                        .HasForeignKey("FinanciamentoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("parcela");
+                    b.Navigation("financiamento");
                 });
 
             modelBuilder.Entity("SimulaCredito.Models.Cliente", b =>
