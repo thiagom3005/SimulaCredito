@@ -13,7 +13,7 @@ namespace SimulaCredito.Models
         [Column("DataVencimento")]
         public DateTime DataVencimento { get; set; }
         [Column("DataPagamento")]
-        public DateTime DataPagamento { get; set; }
+        public DateTime? DataPagamento { get; set; }
 
         public long FinanciamentoId { get; set; }
         public Financiamento financiamento { get; set; }

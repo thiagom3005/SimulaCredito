@@ -1,4 +1,5 @@
-﻿using SimulaCredito.Hypermedia;
+﻿using Newtonsoft.Json;
+using SimulaCredito.Hypermedia;
 using SimulaCredito.Hypermedia.Abstract;
 using SimulaCredito.Models.Base;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,12 +19,12 @@ namespace SimulaCredito.Models
         public double TotalJuros { get; set; }
 
         public long ClienteId { get; set; }
-        public Cliente Cliente { get; set; }
+        public Cliente? Cliente { get; set; }
 
         public long TipoFinanciamentoId { get; set; }
-        public TipoFinanciamento TipoFinanciamento { get; set; }
+        public TipoFinanciamento? TipoFinanciamento { get; set; }
 
-        public ICollection<Parcela> parcelas { get; set; }
+        public ICollection<Parcela>? parcelas { get; set; }
 
         [NotMapped] 
         public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();

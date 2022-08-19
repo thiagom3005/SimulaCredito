@@ -43,6 +43,9 @@ builder.Services.AddSwaggerGen(c =>
         });
 });
 
+builder.Services.AddControllers().AddNewtonsoftJson(
+    options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+
 builder.Services.AddScoped<IClienteBusiness, ClienteBusiness>();
 builder.Services.AddScoped<IFinanciamentoBusiness, FinanciamentoBusiness>();
 builder.Services.AddScoped<ITipoFinanciamentoBusiness, TipoFinanciamentoBusiness>();

@@ -7,11 +7,13 @@ namespace SimulaCredito.Business.Implementations
     {
         private readonly IRepository<Financiamento> _repository;
         private readonly IRepository<TipoFinanciamento> _repositoryTipoFinanciamento;
+        private readonly IRepository<Cliente> _repositoryCliente;
 
-        public FinanciamentoBusiness(IRepository<Financiamento> repository, IRepository<TipoFinanciamento> repositoryTipoFinanciamento)
+        public FinanciamentoBusiness(IRepository<Financiamento> repository, IRepository<TipoFinanciamento> repositoryTipoFinanciamento, IRepository<Cliente> repositoryCliente)
         {
             _repository = repository;
             _repositoryTipoFinanciamento = repositoryTipoFinanciamento;
+            _repositoryCliente = repositoryCliente;
         }
 
         public List<Financiamento> FindAll()
@@ -62,6 +64,13 @@ namespace SimulaCredito.Business.Implementations
         private void ValidaFinanciamento(Financiamento financiamento)
         {
             var tipoFinanciamento = _repositoryTipoFinanciamento.FindById(financiamento.TipoFinanciamentoId);
+            if (tipoFinanciamento is null)
+                throw new Exception("Tipo de financiamento inexistente");
+
+            var cliente = _repositoryCliente.FindById(financiamento.ClienteId);
+            if (tipoFinanciamento is null)
+                throw new Exception("Cliente inexistente");
+
             DateTime primeiroVencimento = DateTime.Now.AddDays(15);
 
             if (tipoFinanciamento.ValorMin > financiamento.ValorTotal)
@@ -88,7 +97,7 @@ namespace SimulaCredito.Business.Implementations
             while (primeiroVencimento < financiamento.UltimoVencimento)
             {
                 qtdParcelas++;
-                primeiroVencimento.AddMonths(1);
+                primeiroVencimento = primeiroVencimento.AddMonths(1);
             }
 
             return qtdParcelas;
@@ -105,9 +114,12 @@ namespace SimulaCredito.Business.Implementations
                 parcelas.Add(new Parcela
                 {
                     NumeroParcela = i + 1,
-                    DataVencimento = primeiroVencimento.AddMonths(i),
+                    DataPagamento = null,
+                    DataVencimento = primeiroVencimento,
                     Valor = valorParcela
                 });
+
+                primeiroVencimento = primeiroVencimento.AddMonths(1);
             }
 
             return parcelas;

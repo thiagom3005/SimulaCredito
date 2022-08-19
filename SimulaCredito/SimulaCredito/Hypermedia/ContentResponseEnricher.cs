@@ -6,7 +6,7 @@ using System.Collections.Concurrent;
 
 namespace SimulaCredito.Hypermedia
 {
-    public abstract class ContentResponseEnricher<T>:IResponseEnricher where T: ISupportHyperMedia
+    public abstract class ContentResponseEnricher<T> : IResponseEnricher where T : ISupportHyperMedia
     {
         public ContentResponseEnricher()
         {
@@ -23,11 +23,21 @@ namespace SimulaCredito.Hypermedia
         bool IResponseEnricher.CanEnrich(ResultExecutingContext response)
         {
             if (response.Result is OkObjectResult okObjectResult)
-                return CanEnrich(okObjectResult.Value.GetType());
-            return false;
+            {
+                try
+                {
+                    return CanEnrich(okObjectResult.Value.GetType());
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            else
+                return false;
         }
 
-        public async Task Enrich (ResultExecutingContext response)
+        public async Task Enrich(ResultExecutingContext response)
         {
             var urlHelper = new UrlHelperFactory().GetUrlHelper(response);
             if (response.Result is OkObjectResult okObjectResult)
