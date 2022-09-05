@@ -1,6 +1,6 @@
 ﻿using SimulaCredito.Data.Converter.Implementations;
 using SimulaCredito.Data.VO;
-using SimulaCredito.Models;
+using SimulaCredito.Hypermedia.Utils;
 using SimulaCredito.Repository;
 
 namespace SimulaCredito.Business.Implementations
@@ -19,6 +19,34 @@ namespace SimulaCredito.Business.Implementations
         public List<ClienteVO> FindAll()
         {
             return _converter.Parse(_repository.FindAll());
+        }
+
+        public PagedSearchVO<ClienteVO> FindWithPagedSearch(string name, string sortDirection, int pageSize, int page)
+        {   
+            var sort = (!string.IsNullOrWhiteSpace(sortDirection)) && !sortDirection.Equals("desc") ? "asc" : "desc";
+            var size = (pageSize < 1) ? 10 : pageSize;
+            var offset = page > 0 ? (page - 1) * size : 0;
+
+            string query = @"SELECT * FROM Cliente WHERE 1 = 1 ";
+            if (!string.IsNullOrWhiteSpace(name))
+                query = query + $" AND Nome LIKE '%{name}%'";
+            query = query + $" ORDER BY Nome {sort} OFFSET {offset} ROWS FETCH NEXT {size} ROWS ONLY ";
+
+            string countQuery = @"SELECT count(*) FROM Cliente WHERE 1 = 1 "; 
+            if (!string.IsNullOrWhiteSpace(name))
+                countQuery = countQuery + $" AND Nome LIKE '%{name}%'";
+
+            var clientes = _repository.FindWithPagedSearch(query);
+            int totalResults = _repository.GetCount(countQuery);
+
+            return new PagedSearchVO<ClienteVO>
+            {
+                CurrentPage = page,
+                List = _converter.Parse(clientes),
+                PageSize = size,
+                SortDirections = sort,
+                TotalResults = totalResults
+            };
         }
 
         public ClienteVO FindById(long id)

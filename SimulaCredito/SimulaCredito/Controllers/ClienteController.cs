@@ -21,15 +21,15 @@ namespace SimulaCredito.Controllers
             _clienteBusiness = clienteBusiness;
         }
 
-        [HttpGet]
+        [HttpGet("{sortDirection}/{pageSize}/{page}")]
         [ProducesResponseType((200), Type = typeof(List<ClienteVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string? name, string sortDirection, int pageSize, int page)
         {
-            return Ok(_clienteBusiness.FindAll());
+            return Ok(_clienteBusiness.FindWithPagedSearch(name, sortDirection, pageSize, page));
         }
 
         [HttpGet("{id}")]

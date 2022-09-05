@@ -11,5 +11,7 @@ namespace SimulaCredito.Repository
         T Update(T tipoFinanciamento);
         void DeleteById(long id);
         bool Exists(long id);
+        List<T> FindWithPagedSearch(string query);
+        int GetCount(string query);
     }
 }
