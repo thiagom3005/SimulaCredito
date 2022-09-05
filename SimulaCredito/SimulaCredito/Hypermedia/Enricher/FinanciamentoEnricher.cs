@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimulaCredito.Data.VO;
 using SimulaCredito.Hypermedia.Constants;
-using SimulaCredito.Models;
 using System.Text;
 
 namespace SimulaCredito.Hypermedia.Enricher
 {
-    public class FinanciamentoEnricher : ContentResponseEnricher<Financiamento>
+    public class FinanciamentoEnricher : ContentResponseEnricher<FinanciamentoVO>
     {
         private readonly object _lock = new object();
 
-        protected override Task EnrichModel(Financiamento content, IUrlHelper urlHelper)
+        protected override Task EnrichModel(FinanciamentoVO content, IUrlHelper urlHelper)
         {
             var path = "api/financiamento/v1";
             string link = GetLink(content.Id, urlHelper, path);

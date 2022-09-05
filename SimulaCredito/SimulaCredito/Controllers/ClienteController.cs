@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using SimulaCredito.Models;
 using SimulaCredito.Business;
 using SimulaCredito.Hypermedia.Filters;
+using SimulaCredito.Data.VO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimulaCredito.Controllers
 {
     [ApiVersion("1")]
     [ApiController]
+    [Authorize("Bearer")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class ClienteController : ControllerBase
     {
@@ -20,7 +22,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType((200), Type = typeof(List<Cliente>))]
+        [ProducesResponseType((200), Type = typeof(List<ClienteVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -31,7 +33,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [ProducesResponseType((200), Type = typeof(ClienteVO))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -43,26 +45,51 @@ namespace SimulaCredito.Controllers
             return Ok(cliente);
         }
 
-        [HttpPost]
-        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [HttpGet("findClienteByName")]
+        [ProducesResponseType((200), Type = typeof(ClienteVO))]
+        [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Post([FromBody] Cliente cliente)
+        public IActionResult Get([FromQuery] string name)
+        {
+            var clientes = _clienteBusiness.FindByName(name);
+            if (clientes == null) return NotFound();
+            return Ok(clientes);
+        }
+
+        [HttpPost]
+        [ProducesResponseType((200), Type = typeof(ClienteVO))]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult Post([FromBody] ClienteVO cliente)
         {
             if (cliente == null) return BadRequest();
             return Ok(_clienteBusiness.Create(cliente));
         }
 
         [HttpPut]
-        [ProducesResponseType((200), Type = typeof(Cliente))]
+        [ProducesResponseType((200), Type = typeof(ClienteVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Put([FromBody] Cliente cliente)
+        public IActionResult Put([FromBody] ClienteVO cliente)
         {
             if (cliente == null) return BadRequest();
             return Ok(_clienteBusiness.Update(cliente));
+        }
+
+        [HttpPatch("{id}")]
+        [ProducesResponseType((200), Type = typeof(ClienteVO))]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(401)]
+        [TypeFilter(typeof(HyperMediaFilter))]
+        public IActionResult Patch(long id)
+        {
+            var cliente = _clienteBusiness.ChangeAtivo(id);
+            return Ok(cliente);
         }
 
         [HttpDelete("{id}")]

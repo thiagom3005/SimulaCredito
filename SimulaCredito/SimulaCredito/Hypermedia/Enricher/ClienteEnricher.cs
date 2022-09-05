@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SimulaCredito.Data.VO;
 using SimulaCredito.Hypermedia.Constants;
-using SimulaCredito.Models;
 using System.Text;
 
 namespace SimulaCredito.Hypermedia.Enricher
 {
-    public class ClienteEnricher : ContentResponseEnricher<Cliente>
+    public class ClienteEnricher : ContentResponseEnricher<ClienteVO>
     {
         private readonly object _lock = new object();
 
-        protected override Task EnrichModel(Cliente content, IUrlHelper urlHelper)
+        protected override Task EnrichModel(ClienteVO content, IUrlHelper urlHelper)
         {
             var path = "api/cliente/v1";
             string link = GetLink(content.Id, urlHelper, path);
@@ -34,6 +34,13 @@ namespace SimulaCredito.Hypermedia.Enricher
                 Href = link,
                 Rel = RelationType.self,
                 Type = ResponseTypeFormat.DefaultPut
+            });
+            content.Links.Add(new HyperMediaLink()
+            {
+                Action = HttpActionVerb.PATCH,
+                Href = link,
+                Rel = RelationType.self,
+                Type = ResponseTypeFormat.DefaultPatch
             });
             content.Links.Add(new HyperMediaLink()
             {

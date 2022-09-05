@@ -1,13 +1,13 @@
-﻿using SimulaCredito.Models;
+﻿using SimulaCredito.Data.VO;
 
 namespace SimulaCredito.Business
 {
     public interface IParcelaBusiness
     {
-        Parcela Create(Parcela parcela);
-        Parcela FindById(long id);
-        List<Parcela> FindAll();
-        Parcela Update(Parcela parcela);
+        ParcelaVO Create(ParcelaVO parcela);
+        ParcelaVO FindById(long id);
+        List<ParcelaVO> FindAll();
+        ParcelaVO Update(ParcelaVO parcela);
         void DeleteById(long id);
     }
 }

@@ -24,6 +24,8 @@ namespace SimulaCredito.Hypermedia
         {
             if (response.Result is OkObjectResult okObjectResult)
             {
+                if (okObjectResult.Value is null) return false;
+
                 try
                 {
                     return CanEnrich(okObjectResult.Value.GetType());

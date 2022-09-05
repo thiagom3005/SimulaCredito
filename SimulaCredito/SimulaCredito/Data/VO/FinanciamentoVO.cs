@@ -1,18 +1,15 @@
-﻿using SimulaCredito.Models.Base;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using SimulaCredito.Hypermedia;
+using SimulaCredito.Hypermedia.Abstract;
+using SimulaCredito.Models;
 
-namespace SimulaCredito.Models
+namespace SimulaCredito.Data.VO
 {
-    [Table("Financiamento")]
-    public class Financiamento: BaseEntity
+    public class FinanciamentoVO: ISupportHyperMedia
     {
-        [Column("ValorTotal")] 
+        public long Id { get; set; }
         public double ValorTotal { get; set; }
-        [Column("UltimoVencimento")]
         public DateTime UltimoVencimento { get; set; }
-        [Column("ValorTotalJuros")]
         public double ValorTotalJuros { get; set; }
-        [Column("TotalJuros")]
         public double TotalJuros { get; set; }
 
         public long ClienteId { get; set; }
@@ -22,5 +19,7 @@ namespace SimulaCredito.Models
         public TipoFinanciamento? TipoFinanciamento { get; set; }
 
         public ICollection<Parcela>? parcelas { get; set; }
+
+        public List<HyperMediaLink> Links { get; set; } = new List<HyperMediaLink>();
     }
 }

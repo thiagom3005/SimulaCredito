@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace SimulaCredito.Models.Context
 {
@@ -21,7 +20,11 @@ namespace SimulaCredito.Models.Context
 
         public DbSet<TipoFinanciamento> TipoFinanciamento { get; set; }
         public DbSet<Cliente> Cliente { get; set; }
+        public DbSet<Financiamento> Financiamento { get; set; }
+        public DbSet<Parcela> Parcela { get; set; }
+        public DbSet<User> User { get; set; }
+
     }
 
-    
+
 }

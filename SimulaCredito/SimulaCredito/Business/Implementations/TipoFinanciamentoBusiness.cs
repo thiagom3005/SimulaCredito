@@ -1,37 +1,44 @@
-﻿using SimulaCredito.Models;
-using SimulaCredito.Models.Context;
+﻿using SimulaCredito.Data.Converter.Implementations;
+using SimulaCredito.Data.VO;
+using SimulaCredito.Models;
 using SimulaCredito.Repository;
 
 namespace SimulaCredito.Business.Implementations
 {
     public class TipoFinanciamentoBusiness : ITipoFinanciamentoBusiness
     {
-        private IRepository<TipoFinanciamento> _repository;
+        private readonly IRepository<TipoFinanciamento> _repository;
+        private readonly TipoFinanciamentoConverter _converter;
 
         public TipoFinanciamentoBusiness(IRepository<TipoFinanciamento> repository)
         {
             _repository = repository;
+            _converter = new TipoFinanciamentoConverter();
         }
 
-        public List<TipoFinanciamento> FindAll()
+        public List<TipoFinanciamentoVO> FindAll()
         {
-            return _repository.FindAll();
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public TipoFinanciamento FindById(long id)
+        public TipoFinanciamentoVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
 
         }
 
-        public TipoFinanciamento Create(TipoFinanciamento tipoFinanciamento)
+        public TipoFinanciamentoVO Create(TipoFinanciamentoVO tipoFinanciamento)
         {
-            return _repository.Create(tipoFinanciamento);
+            var tipoFinanciamentoEntity = _converter.Parse(tipoFinanciamento);
+            tipoFinanciamentoEntity = _repository.Create(tipoFinanciamentoEntity);
+            return _converter.Parse(tipoFinanciamentoEntity);
         }
 
-        public TipoFinanciamento Update(TipoFinanciamento tipoFinanciamento)
+        public TipoFinanciamentoVO Update(TipoFinanciamentoVO tipoFinanciamento)
         {
-            return _repository.Update(tipoFinanciamento);
+            var tipoFinanciamentoEntity = _converter.Parse(tipoFinanciamento);
+            tipoFinanciamentoEntity = _repository.Update(tipoFinanciamentoEntity);
+            return _converter.Parse(tipoFinanciamentoEntity);
         }
 
         public void DeleteById(long id)

@@ -1,4 +1,6 @@
-﻿using SimulaCredito.Models;
+﻿using SimulaCredito.Data.Converter.Implementations;
+using SimulaCredito.Data.VO;
+using SimulaCredito.Models;
 using SimulaCredito.Repository;
 
 namespace SimulaCredito.Business.Implementations
@@ -6,27 +8,29 @@ namespace SimulaCredito.Business.Implementations
     public class FinanciamentoBusiness : IFinanciamentoBusiness
     {
         private readonly IRepository<Financiamento> _repository;
-        private readonly IRepository<TipoFinanciamento> _repositoryTipoFinanciamento;
-        private readonly IRepository<Cliente> _repositoryCliente;
+        private readonly FinanciamentoConverter _converter;
+        private readonly ITipoFinanciamentoBusiness _tipoFinanciamentoBusiness;
+        private readonly IClienteBusiness _clienteBusiness;
 
-        public FinanciamentoBusiness(IRepository<Financiamento> repository, IRepository<TipoFinanciamento> repositoryTipoFinanciamento, IRepository<Cliente> repositoryCliente)
+        public FinanciamentoBusiness(IRepository<Financiamento> repository, ITipoFinanciamentoBusiness tipoFinanciamentoBusiness, IClienteBusiness clienteBusiness)
         {
             _repository = repository;
-            _repositoryTipoFinanciamento = repositoryTipoFinanciamento;
-            _repositoryCliente = repositoryCliente;
+            _converter = new FinanciamentoConverter();
+            _tipoFinanciamentoBusiness = tipoFinanciamentoBusiness;
+            _clienteBusiness = clienteBusiness;
         }
 
-        public List<Financiamento> FindAll()
+        public List<FinanciamentoVO> FindAll()
         {
-            return _repository.FindAll();
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public Financiamento FindById(long id)
+        public FinanciamentoVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public Financiamento Create(Financiamento financiamento)
+        public FinanciamentoVO Create(FinanciamentoVO financiamento)
         {
             try
             {
@@ -34,7 +38,9 @@ namespace SimulaCredito.Business.Implementations
                 var qtdParcelas = CalculaQtdParcelas(financiamento);
                 financiamento.parcelas = CriaParcelas(financiamento, qtdParcelas);
 
-                return _repository.Create(financiamento);
+                var financiamentoEntity = _converter.Parse(financiamento);
+                financiamentoEntity = _repository.Create(financiamentoEntity);
+                return _converter.Parse(financiamentoEntity);
             }
             catch (Exception)
             {
@@ -42,13 +48,15 @@ namespace SimulaCredito.Business.Implementations
             }
         }
 
-        public Financiamento Update(Financiamento financiamento)
+        public FinanciamentoVO Update(FinanciamentoVO financiamento)
         {
             try
             {
                 ValidaFinanciamento(financiamento);
 
-                return _repository.Update(financiamento);
+                var financiamentoEntity = _converter.Parse(financiamento);
+                financiamentoEntity = _repository.Update(financiamentoEntity);
+                return _converter.Parse(financiamentoEntity);
             }
             catch (Exception)
             {
@@ -61,13 +69,13 @@ namespace SimulaCredito.Business.Implementations
             _repository.DeleteById(id);
         }
 
-        private void ValidaFinanciamento(Financiamento financiamento)
+        private void ValidaFinanciamento(FinanciamentoVO financiamento)
         {
-            var tipoFinanciamento = _repositoryTipoFinanciamento.FindById(financiamento.TipoFinanciamentoId);
+            var tipoFinanciamento = _tipoFinanciamentoBusiness.FindById(financiamento.TipoFinanciamentoId);
             if (tipoFinanciamento is null)
                 throw new Exception("Tipo de financiamento inexistente");
 
-            var cliente = _repositoryCliente.FindById(financiamento.ClienteId);
+            var cliente = _clienteBusiness.FindById(financiamento.ClienteId);
             if (tipoFinanciamento is null)
                 throw new Exception("Cliente inexistente");
 
@@ -88,7 +96,7 @@ namespace SimulaCredito.Business.Implementations
             financiamento.TotalJuros = financiamento.ValorTotalJuros - financiamento.ValorTotal;
         }
 
-        private int CalculaQtdParcelas(Financiamento financiamento)
+        private int CalculaQtdParcelas(FinanciamentoVO financiamento)
         {
 
             DateTime primeiroVencimento = DateTime.Now.AddDays(15);
@@ -103,7 +111,7 @@ namespace SimulaCredito.Business.Implementations
             return qtdParcelas;
         }
 
-        private ICollection<Parcela> CriaParcelas(Financiamento financiamento, int qtdParcelas)
+        private ICollection<Parcela> CriaParcelas(FinanciamentoVO financiamento, int qtdParcelas)
         {
             var valorParcela = financiamento.ValorTotalJuros / qtdParcelas;
             DateTime primeiroVencimento = DateTime.Now.AddDays(15);

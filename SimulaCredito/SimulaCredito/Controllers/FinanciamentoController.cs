@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using SimulaCredito.Models;
 using SimulaCredito.Business;
 using SimulaCredito.Hypermedia.Filters;
+using SimulaCredito.Data.VO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimulaCredito.Controllers
 {
     [ApiVersion("1")]
     [ApiController]
+    [Authorize("Bearer")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class FinanciamentoController : ControllerBase
     {
@@ -20,7 +22,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType((200), Type = typeof(List<Financiamento>))]
+        [ProducesResponseType((200), Type = typeof(List<FinanciamentoVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -31,7 +33,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType((200), Type = typeof(Financiamento))]
+        [ProducesResponseType((200), Type = typeof(FinanciamentoVO))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -44,22 +46,22 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((200), Type = typeof(Financiamento))]
+        [ProducesResponseType((200), Type = typeof(FinanciamentoVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Post([FromBody] Financiamento financiamento)
+        public IActionResult Post([FromBody] FinanciamentoVO financiamento)
         {
             if (financiamento == null) return BadRequest();
             return Ok(_financiamentoBusiness.Create(financiamento));
         }
 
         [HttpPut]
-        [ProducesResponseType((200), Type = typeof(Financiamento))]
+        [ProducesResponseType((200), Type = typeof(FinanciamentoVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Put([FromBody] Financiamento financiamento)
+        public IActionResult Put([FromBody] FinanciamentoVO financiamento)
         {
             if (financiamento == null) return BadRequest();
             return Ok(_financiamentoBusiness.Update(financiamento));

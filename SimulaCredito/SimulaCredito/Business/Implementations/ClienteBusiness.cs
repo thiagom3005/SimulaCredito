@@ -1,41 +1,58 @@
-﻿using SimulaCredito.Models;
+﻿using SimulaCredito.Data.Converter.Implementations;
+using SimulaCredito.Data.VO;
+using SimulaCredito.Models;
 using SimulaCredito.Repository;
 
 namespace SimulaCredito.Business.Implementations
 {
     public class ClienteBusiness : IClienteBusiness
     {
-        private readonly IRepository<Cliente> _repository;
-        private readonly IClienteRepository _clienteRepository;
+        private readonly IClienteRepository _repository;
+        private readonly ClienteConverter _converter;
 
-        public ClienteBusiness(IRepository<Cliente> repository, IClienteRepository clienteRepository)
+        public ClienteBusiness(IClienteRepository repository)
         {
+            _converter = new ClienteConverter();
             _repository = repository;
-            _clienteRepository = clienteRepository;
         }
 
-        public List<Cliente> FindAll()
+        public List<ClienteVO> FindAll()
         {
-            return _repository.FindAll();
+            return _converter.Parse(_repository.FindAll());
         }
 
-        public Cliente FindById(long id)
+        public ClienteVO FindById(long id)
         {
-            return _repository.FindById(id);
+            return _converter.Parse(_repository.FindById(id));
         }
 
-        public Cliente Create(Cliente cliente)
+        public List<ClienteVO> FindByName(string name)
         {
-            var clienteCadastrado = _clienteRepository.FindByCPF(cliente.CPF);
+            return _converter.Parse(_repository.FindByName(name));
+        }
+
+        public ClienteVO Create(ClienteVO cliente)
+        {
+            var clienteCadastrado = _repository.FindByCPF(cliente.CPF);
             if (clienteCadastrado != null)
                 throw new Exception("CPF já cadastrado");
 
-            return _repository.Create(cliente);
+            var clienteEntity = _converter.Parse(cliente);
+            clienteEntity = _repository.Create(clienteEntity);
+            return _converter.Parse(clienteEntity);
         }
 
-        public Cliente Update(Cliente cliente)
+        public ClienteVO Update(ClienteVO cliente)
         {
-            return _repository.Update(cliente);
+            var clienteEntity = _converter.Parse(cliente);
+            clienteEntity = _repository.Update(clienteEntity);
+            return _converter.Parse(clienteEntity);
+        }
+
+        public ClienteVO ChangeAtivo(long id)
+        {
+            var clienteEntity = _repository.ChangeAtivo(id);
+            return _converter.Parse(clienteEntity);
         }
 
         public void DeleteById(long id)

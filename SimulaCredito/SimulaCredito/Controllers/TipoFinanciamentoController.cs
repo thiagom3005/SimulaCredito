@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
-using SimulaCredito.Models;
 using SimulaCredito.Business;
 using SimulaCredito.Hypermedia.Filters;
+using SimulaCredito.Data.VO;
+using Microsoft.AspNetCore.Authorization;
 
 namespace SimulaCredito.Controllers
 {
     [ApiVersion("1")]
     [ApiController]
+    [Authorize("Bearer")]
     [Route("api/[controller]/v{version:apiVersion}")]
     public class TipoFinanciamentoController : ControllerBase
     {
@@ -20,7 +22,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType((200), Type = typeof(List<TipoFinanciamento>))]
+        [ProducesResponseType((200), Type = typeof(List<TipoFinanciamentoVO>))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -31,7 +33,7 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpGet("{id}")]
-        [ProducesResponseType((200),Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType((200),Type = typeof(TipoFinanciamentoVO))]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
@@ -44,22 +46,22 @@ namespace SimulaCredito.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType((200), Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType((200), Type = typeof(TipoFinanciamentoVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Post([FromBody] TipoFinanciamento tipoFinanciamento)
+        public IActionResult Post([FromBody] TipoFinanciamentoVO tipoFinanciamento)
         {
             if (tipoFinanciamento == null) return BadRequest();
             return Ok(_tipoFinanciamentoBusiness.Create(tipoFinanciamento));
         }
 
         [HttpPut]
-        [ProducesResponseType((200), Type = typeof(TipoFinanciamento))]
+        [ProducesResponseType((200), Type = typeof(TipoFinanciamentoVO))]
         [ProducesResponseType(400)]
         [ProducesResponseType(401)]
         [TypeFilter(typeof(HyperMediaFilter))]
-        public IActionResult Put([FromBody] TipoFinanciamento tipoFinanciamento)
+        public IActionResult Put([FromBody] TipoFinanciamentoVO tipoFinanciamento)
         {
             if (tipoFinanciamento == null) return BadRequest();
             return Ok(_tipoFinanciamentoBusiness.Update(tipoFinanciamento));

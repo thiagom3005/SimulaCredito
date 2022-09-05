@@ -1,13 +1,13 @@
-﻿using SimulaCredito.Models;
+﻿using SimulaCredito.Data.VO;
 
 namespace SimulaCredito.Business
 {
     public interface IFinanciamentoBusiness
     {
-        Financiamento Create(Financiamento financiamento);
-        Financiamento FindById(long id);
-        List<Financiamento> FindAll();
-        Financiamento Update(Financiamento financiamento);
+        FinanciamentoVO Create(FinanciamentoVO financiamento);
+        FinanciamentoVO FindById(long id);
+        List<FinanciamentoVO> FindAll();
+        FinanciamentoVO Update(FinanciamentoVO financiamento);
         void DeleteById(long id);
     }
 }
